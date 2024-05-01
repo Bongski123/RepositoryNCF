@@ -1,5 +1,6 @@
 import React from 'react';
 import PendingResearches from '../PendingApproval';
+import withAuthorization from '../../auth/WithAuth';
 
 const AdminPage = () => {
   return (
@@ -10,4 +11,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default withAuthorization(AdminPage);

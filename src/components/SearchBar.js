@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import Container from "react-bootstrap/Container";
+import { useState,useEffect  } from "react";
+import Container from "react-bootstrap/esm/Container";
 import { FaSearch } from "react-icons/fa";
-
-function SearchBar({ setResults }) {
+import Fuse from "fuse.js";
+function SearchBar({  setResults }) {
   const [input, setInput] = useState("");
-  const [researches, setDocuments] = useState([]);
+  const [documents, setDocuments] = useState([]); 
 
   useEffect(() => {
-    fetch('http://localhost:9000/api/researches')
+    fetch('http://127.0.0.1:9000/api/researches') 
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -26,44 +26,47 @@ function SearchBar({ setResults }) {
       });
   }, []); // Empty dependency array ensures this effect runs only once on component mount
 
-  // Manual search function
-  const performSearch = (value) => {
-    if (researches.length > 0 && typeof setResults === 'function') {
-      const results = researches.filter(researches =>
-        (researches.title && researches.title.toLowerCase().includes(value.toLowerCase())) ||
-        (researches.abstract && researches.abstract.toLowerCase().includes(value.toLowerCase())) ||
-        (researches.author && researches.author.toLowerCase().includes(value.toLowerCase())) ||
-        (researches.category_name && researches.category_name.toLowerCase().includes(value.toLowerCase())) ||
-        (researches.course_name && researches.course_name.toLowerCase().includes(value.toLowerCase())) ||
-        (researches.file_name && researches.file_name.toLowerCase().includes(value.toLowerCase()))
-      );
-      setResults(results);
-    }
-  };
 
-  // Handle input change
-  const handleChange = (value) => {
-    setInput(value);
-    performSearch(value); // Perform search on input change
-  };
+const fuseOptions = {
+  keys: ['title', 'abstract','author','category_name','course_name'], // Specify the properties to search within
+  includeScore: true, // Include search score for ranking results
+  threshold: 0.3, // Set the threshold for fuzzy search 
+};
 
-  // Handle search button click
-  const handleSearch = () => {
-    performSearch(input); // Perform search when search button is clicked
-  };
+// Initialize Fuse.js with publications data and options
+const fuse = new Fuse(documents, fuseOptions);
+
+// Perform fuzzy search and update results
+const performSearch = (value) => {
+  const results = fuse.search(value).map(result => result.item);
+  setResults(results);
+};
+
+// Handle input change
+const handleChange = (value) => {
+  setInput(value);
+  performSearch(value); // Perform search on input change
+};
+
+// Handle search button click
+const handleSearch = () => {
+  performSearch(input); // Perform search when search button is clicked
+};
+
 
   return (
     <Container fluid className="search-container">
-      <div className="input-wrapper">
-        <FaSearch id="search-icon" />
-        <input
-          placeholder="title, author, Keyword, etc.."
-          value={input}
-          onChange={(e) => handleChange(e.target.value)}
-        />
-      </div>
+    <div className="input-wrapper">
+      <FaSearch id="search-icon" />
+      <input
+        placeholder="Title, Author, Keyword, etc.."
+        value={input}
+        onChange={(e) => handleChange(e.target.value)}
+      />
+
+    </div>
     </Container>
   );
 }
 
-export { SearchBar };
+export {SearchBar};

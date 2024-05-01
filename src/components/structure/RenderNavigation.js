@@ -1,7 +1,8 @@
 import { Link, Route, Routes } from "react-router-dom";
 import { AuthData } from "../../auth/AuthWrapper";
 import { nav } from "./navigation";
-
+import ResultDetailPage from "../pages/ResultPage";
+import { SearchResult } from "../SearchResult";
 
 export const RenderRoutes = () => {
 
@@ -17,7 +18,13 @@ export const RenderRoutes = () => {
                        return <Route key={i} path={r.path} element={r.element}/>
                   } else return false
              })}
-             
+              
+  
+ 
+        <Route path="/" element={<SearchResult />} />
+        <Route path="/result" element={<ResultDetailPage />} />
+ 
+   
              </Routes>
         )
    }

@@ -11,7 +11,7 @@ function SearchResult({ result }) {
   const [fileData, setFileData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const documentFileName = result.file_name; // Extract document file name from result
+  const documentID = result.researches_id; // Extract documentID from result
 
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
@@ -38,7 +38,7 @@ function SearchResult({ result }) {
     const fetchPDF = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://localhost:9000/api/pdf/${documentFileName}`, {
+        const response = await axios.get(`http://127.0.0.1:9000/api/pdf/${documentID}`, {
           responseType: "arraybuffer",
         });
         const pdfBlob = new Blob([response.data], { type: "application/pdf" });
@@ -53,11 +53,10 @@ function SearchResult({ result }) {
       }
     };
 
-    if (showModal && documentFileName) {
+    if (showModal) {
       fetchPDF();
     }
-  }, [documentFileName, showModal, selectedFormat]);
-
+  }, [documentID, showModal, selectedFormat]);
 
   return (
     <>
@@ -96,7 +95,11 @@ function SearchResult({ result }) {
           ) : error ? (
             <p>{error}</p>
           ) : (
-            <iframe src={fileData} title="PDF Viewer" width="100%" height="600px"></iframe>
+            <iframe src={fileData} title="PDF Viewer" width="100%" height="600px" ></iframe>
+
+
+
+
           )}
         </Modal.Body>
         <Modal.Footer>

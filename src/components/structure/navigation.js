@@ -18,5 +18,8 @@ export const nav = [
      { path:     "/SearchBar",  name: "Search",   element: <SearchBar />,  isMenu: true, isPrivate: false  },
      { path:     "/Upload",  name: "Upload Researches",   element: <Upload />,  isMenu: true, isPrivate: true  },
      { path:     "/adminpage",  name: "Adminpage",   element: <AdminPage />,  isMenu: true, isPrivate: false  },
+     
+     
     
 ]
+
